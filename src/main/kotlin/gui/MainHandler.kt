@@ -18,7 +18,7 @@ class MainHandler : MainFlow() {
             atomicWorld.set(initialWorld)
             worldPanel.repaint()
 
-            executeGoal(currentProblem.goal)
+            executeGoal(currentProblem.goals.first())
             controlPanel.stepOver.isEnabled = false
             controlPanel.stepReturn.isEnabled = false
 
@@ -57,7 +57,7 @@ class MainHandler : MainFlow() {
 
         controlPanel.check.addActionListener {
             controlPanel.startStopReset.text = "reset"
-            checkAgainst(currentProblem.goal)
+            checkAgainst(currentProblem.goals)
 
             editor.requestFocusInWindow()
         }

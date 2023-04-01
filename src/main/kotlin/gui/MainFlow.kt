@@ -38,7 +38,7 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
         start(vm.createGoalInstructions(goal))
     }
 
-    fun checkAgainst(goal: String) {
+    fun checkAgainst(goals: List<String>) {
         editor.indent()
         editor.autosaver.save()
         editor.clearDiagnostics()
@@ -51,9 +51,9 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
                 val instructions: List<Instruction> = CodeGenerator(parser.sema).generate(main)
                 virtualMachinePanel.setProgram(instructions)
 
-                val goalInstructions = vm.createGoalInstructions(goal)
+                val goalsInstructions = goals.mapTo(ArrayList()) { goal -> vm.createGoalInstructions(goal) }
 
-                check(instructions, goalInstructions)
+                check(instructions, goalsInstructions)
             } else {
                 editor.setCursorTo(editor.length())
                 showDiagnostic("void ${currentProblem.name}() not found")
@@ -63,7 +63,7 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
         }
     }
 
-    private fun check(instructions: List<Instruction>, goalInstructions: List<Instruction>) {
+    private fun check(instructions: List<Instruction>, goalsInstructions: MutableList<List<Instruction>>) {
         controlPanel.checkStarted()
 
         fun cleanup() {
@@ -94,7 +94,7 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
             try {
                 var now: Long
                 do {
-                    checkOneWorld(instructions, goalInstructions)
+                    checkOneWorld(instructions, goalsInstructions)
                     ++worldCounter
                     now = System.currentTimeMillis()
                     if (!ids.hasNext() || now - start >= 2000) {
@@ -120,16 +120,26 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
         EventQueue.invokeLater(::checkFor100ms)
     }
 
-    private fun checkOneWorld(instructions: List<Instruction>, goalInstructions: List<Instruction>) {
-        val goalWorldIterator = goalWorlds(goalInstructions).iterator()
+    private fun checkOneWorld(instructions: List<Instruction>, goalsInstructions: MutableList<List<Instruction>>) {
+        val iterators = goalsInstructions.mapTo(ArrayList()) { goalWorlds(it).iterator() }
+
+        fun eliminate(index: Int, message: String) {
+            goalsInstructions.removeAt(index)
+            iterators.removeAt(index)
+            if (iterators.isEmpty()) {
+                throw Diagnostic(virtualMachine.currentInstruction.position, message)
+            }
+        }
 
         atomicWorld.set(initialWorld)
         virtualMachine = VirtualMachine(instructions, atomicWorld, this) { world ->
-            if (!goalWorldIterator.hasNext()) {
-                throw Diagnostic(virtualMachine.currentInstruction.position, "overshoots goal")
-            }
-            if (!goalWorldIterator.next().equalsIgnoringDirection(world)) {
-                throw Diagnostic(virtualMachine.currentInstruction.position, "deviates from goal")
+            for (index in iterators.lastIndex downTo 0) {
+                val goalWorldIterator = iterators[index]
+                if (!goalWorldIterator.hasNext()) {
+                    eliminate(index, "overshoots goal")
+                } else if (!goalWorldIterator.next().equalsIgnoringDirection(world)) {
+                    eliminate(index, "deviates from goal")
+                }
             }
         }
 
@@ -139,8 +149,11 @@ open class MainFlow : MainDesign(AtomicReference(Problem.karelsFirstProgram.rand
         } catch (error: KarelError) {
             throw Diagnostic(virtualMachine.currentInstruction.position, error.message!!)
         }
-        if (goalWorldIterator.hasNext()) {
-            throw Diagnostic(virtualMachine.currentInstruction.position, "falls short of goal")
+        for (index in iterators.lastIndex downTo 0) {
+            val goalWorldIterator = iterators[index]
+            if (goalWorldIterator.hasNext()) {
+                eliminate(index, "falls short of goal")
+            }
         }
     }
 

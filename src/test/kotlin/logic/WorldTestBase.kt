@@ -11,20 +11,28 @@ open class WorldTestBase : VirtualMachine.Callbacks {
     protected var initialWorld: World = Problem.emptyWorld
     protected var world: World = Problem.emptyWorld
 
-    protected fun executeGoal(problem: Problem) {
-        val instructions = vm.createGoalInstructions(problem.goal)
-        initialWorld = problem.randomWorld()
-        val atomicWorld = AtomicReference(initialWorld)
-        val virtualMachine = VirtualMachine(instructions, atomicWorld, this)
-        try {
-            virtualMachine.stepReturn()
-        } catch (_: Stack.Exhausted) {
+    protected fun testAfterEachGoalOf(problem: Problem, test: () -> Unit) {
+        for (goal in problem.goals) {
+            val instructions = vm.createGoalInstructions(goal)
+            initialWorld = problem.randomWorld()
+            val atomicWorld = AtomicReference(initialWorld)
+            val virtualMachine = VirtualMachine(instructions, atomicWorld, this)
+            try {
+                virtualMachine.stepReturn()
+            } catch (_: Stack.Exhausted) {
+            }
+            world = atomicWorld.get()
+            test()
         }
-        world = atomicWorld.get()
     }
 
     override fun onInfiniteLoop() {
         fail("infinite loop detected")
+    }
+
+    protected fun assertKarelAt(x: Int, y: Int) {
+        assertEquals(x, world.x)
+        assertEquals(y, world.y)
     }
 
     protected fun assertKarelAt(x: Int, y: Int, direction: Int) {
