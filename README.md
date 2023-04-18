@@ -1,14 +1,11 @@
-😕 Brauchst du Hilfe beim Installieren in Windows?<br>
-📺 Dann schau dir [Karel The Robot installieren in Windows](https://www.youtube.com/watch?v=69du58tb_48&list=PL5vhQpd0v6Y5dVcY8_9Ru6dANaz6UmPnL) an!
-
-![hangTheLampions](https://i.imgur.com/EMKIohi.png)
+## About this project:
+This is an Open-Source learning tool, based on a fork, which is also Open-Source. 
 
 ## Table of contents
 
-1. [Background](#background)
-2. [Getting started](#getting-started)
+1. [Getting started](#getting-started)
    - [Autosave](#autosave)
-3. [Language reference](#language-reference)
+2. [Language reference](#language-reference)
    - [Primitive commands](#primitive-commands)
    - [Custom commands](#custom-commands)
    - [Repeat](#repeat)
@@ -20,29 +17,9 @@
    - [Or `||`](#or-)
    - [Summary compound conditions](#summary-compound-conditions)
    - [While](#while)
-4. [Keyboard shortcuts](#keyboard-shortcuts)
-
-## Background
-
-Karel The Robot is a simple teaching environment for imperative programming basics.
-The original idea was developed in the 1970s by Richard Pattis at Stanford University:
-
-> In the 1970s, a Stanford graduate student named Rich Pattis decided that it would be easier to teach the fundamentals of programming if students could somehow learn the basic ideas in a simple environment free from the complexities that characterize most programming languages.
-
-![Pattis](https://i.imgur.com/i3KWuae.jpg)
-
-> In sophisticated languages like Java, there are so many details that learning these details often becomes the focus of the course.
-> When that happens, the much more critical issues of [problem solving](PROSOL.md) tend to get lost in the shuffle.
-> By starting with Karel, you can concentrate on solving problems from the very beginning.
-> And because Karel encourages imagination and creativity, you can have quite a lot of fun along the way.
-
-This project started in 2012 due to dissatisfaction with the available Karel environments.
-Since then, thousands of German university students have been introduced to the basics of imperative programming via this project.
+3. [Keyboard shortcuts](#keyboard-shortcuts)
 
 ## Getting started
-
-😕 Brauchst du Hilfe beim Installieren in Windows?<br>
-📺 Dann schau dir [Karel The Robot installieren in Windows](https://www.youtube.com/watch?v=69du58tb_48&list=PL5vhQpd0v6Y5dVcY8_9Ru6dANaz6UmPnL) an!
 
 Please take the time to **read the following instructions carefully.**
 Most problems stem from skipping or misunderstanding important steps.
@@ -59,35 +36,11 @@ Most problems stem from skipping or misunderstanding important steps.
 
 5. Click Next, Next, Install, Finish
 
-6. Click [karel.jar](https://raw.githubusercontent.com/fredoverflow/karel/release/karel.jar) to download Karel<br>
+6. Click [MG-Karel-Learning.jar](https://raw.githubusercontent.com/Microgam-es/MG-Karel-Learning/release/karel.jar) to download Karel<br>
 **If Karel fails to download**, continue with ⚠️ Troubleshooting *Windows*, or ⚠️ Troubleshooting *macOS*
 
 7. Open the `Downloads` folder and double-click `karel.jar` to start Karel<br>
 **If Karel fails to start**, continue with ⚠️ Troubleshooting *Windows*, or ⚠️ Troubleshooting *macOS*
-
-### ⚠️ Troubleshooting *Windows*
-
-Steps 1 through 5 (install Java) worked, but steps 6 (download Karel) or 7 (start Karel) failed? Then read on.
-
-- Move your mouse over the script below
-- A button appears in the top right corner of the script
-- Click that button to copy the script
-```cmd
-cd Downloads
-if exist karel.jar.zip erase karel.jar.zip
-curl -o karel.jar https://raw.githubusercontent.com/fredoverflow/karel/release/karel.jar
-echo java -version > karel.cmd
-echo java -jar karel.jar >> karel.cmd
-karel.cmd
-
-```
-- Press the Windows key (the key on the bottom left with the Windows logo ⊞ on it)
-- Write `cmd` and confirm with Enter
-- A terminal appears
-- Right-click anywhere inside that terminal to paste and execute the script
-
-From now on, simply double-click `karel.cmd` in the `Downloads` folder to start Karel.<br>
-Feel free to move `karel.jar` and `karel.cmd` to the Desktop or any other folder you prefer.
 
 ### ⚠️ Troubleshooting *macOS*
 
